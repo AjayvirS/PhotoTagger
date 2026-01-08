@@ -17,6 +17,7 @@ A small-but-complete Android app that covers multiple bases/layers of SW develop
 - **Secrets:** LLM API key kept server-side (function env vars).
 
 ### Proposed Activity Diagram
-<img width="2055" height="562" alt="Class Diagram(1)" src="https://github.com/user-attachments/assets/52d0b2b8-bb22-4987-8cb4-f37d4050154d" />
+<img width="2055" height="562" alt="Class Diagram(2)" src="https://github.com/user-attachments/assets/ae9c0791-25d2-4433-a110-eea7ba65e128" />
+
 
 
