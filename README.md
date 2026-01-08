@@ -9,3 +9,11 @@ A small-but-complete Android app that covers multiple bases/layers of SW develop
 - Call **Cloud Function** to tag: Function uses an external **LLM/Vision** API.
 - Persist metadata + tags in **Firestore**; show **Library**, **Search**, **Details**.
 - **CI/CD**: GitHub Actions build, lint, tests, signed AAB artifact on tag.
+
+
+## Architecture
+- **App (Android):** Kotlin, Compose, Navigation, Hilt, WorkManager (enqueue upload -> tagging flow), Coil.
+- **Backend (Firebase):** Auth, Storage, **Cloud Functions** (HTTP callable for `annotatePhoto`), Firestore.
+- **Secrets:** LLM API key kept server-side (function env vars).
+
+### Sequence
