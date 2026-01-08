@@ -16,4 +16,7 @@ A small-but-complete Android app that covers multiple bases/layers of SW develop
 - **Backend (Firebase):** Auth, Storage, **Cloud Functions** (HTTP callable for `annotatePhoto`), Firestore.
 - **Secrets:** LLM API key kept server-side (function env vars).
 
-### Sequence
+### Proposed Activity Diagram
+<img width="2055" height="562" alt="Class Diagram(1)" src="https://github.com/user-attachments/assets/52d0b2b8-bb22-4987-8cb4-f37d4050154d" />
+
+
