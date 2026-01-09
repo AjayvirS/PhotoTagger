@@ -5,10 +5,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.tagger.phototagger.data.local.model.AnnotatedImage
+import com.tagger.phototagger.data.local.entity.AnnotatedImageEntity
 
 @Database(
-    entities = [AnnotatedImage::class],
+    entities = [AnnotatedImageEntity::class],
     version = 1,
     exportSchema = false
 )
