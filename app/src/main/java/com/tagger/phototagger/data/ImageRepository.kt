@@ -4,6 +4,7 @@ import ImageDao
 import android.content.Context
 import android.net.Uri
 import android.util.Base64
+import android.util.Log
 import com.example.kotlintutorials.R
 import com.tagger.phototagger.data.local.LocalFileManager
 import com.tagger.phototagger.data.local.entity.AnnotatedImageEntity
@@ -11,6 +12,7 @@ import com.tagger.phototagger.data.remote.NetworkModule
 import com.tagger.phototagger.data.remote.dto.AnnotatedImageRequest
 import com.tagger.phototagger.data.util.deriveTitleFromUri
 import com.tagger.phototagger.data.util.sanitizeFilename
+import com.tagger.phototagger.data.util.toUriFlexible
 import com.tagger.phototagger.enum.ProcessingStatus
 import com.tagger.phototagger.model.Artwork
 
@@ -33,41 +35,29 @@ class ImageRepository @Inject constructor(
     private val resourceBaseUri: String
         get() = "android.resource://${context.packageName}/"
     suspend fun saveImage(
-        uri: Uri,
-        suggestedTitle: String? = null
-    ): Long = withContext(Dispatchers.IO) {
+        uri: String,
+        title: String
+    ): String? = withContext(Dispatchers.IO) {
         try {
-            val title = suggestedTitle?.takeIf { it.isNotBlank() }
-                ?: deriveTitleFromUri(uri)
-
-            val storedPath: String = localFileManager.storeImage(
-                filename = sanitizeFilename(title),
-                uriString = uri.toString()
-            ) ?: return@withContext -1L
-
-            val createdAt = System.currentTimeMillis()
+            val storedPath = localFileManager.storeImage(
+                uri = uri.toUriFlexible(),
+                filename = sanitizeFilename(title)
+            ) ?: return@withContext null
 
             val record = AnnotatedImageEntity(
                 title = title,
                 imagePath = storedPath,
                 imageSource = ImageSource.PICKER.name,
-                createdAt = createdAt,
-                updatedAt = createdAt,
                 status = ProcessingStatus.PENDING.name,
                 thumbPath = null
             )
 
             imageDao.insertImage(record)
+            return@withContext storedPath
         } catch (t: Throwable) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, t.message)
-            -1L
+            Log.e("saveImage", "save failed", t)
+            return@withContext null
         }
-    }
-
-
-    suspend fun addFromPicker(uri: Uri, title: String = ""): Long{
-        imageDao.insertImage(AnnotatedImageEntity(title=title, imagePath = uri.toString(),
-            imageSource = ImageSource.PICKER.name))
     }
 
 

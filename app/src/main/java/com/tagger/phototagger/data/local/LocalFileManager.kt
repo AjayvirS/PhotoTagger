@@ -12,8 +12,7 @@ import javax.inject.Inject
 
 class LocalFileManager @Inject constructor(@ApplicationContext private val context: Context) {
 
-    fun storeImage(imagePath: String, filename: String): String? {
-        val uri = imagePath.toUri()
+    fun storeImage(uri: Uri, filename: String): String? {
         val targetDir = File(context.filesDir, "images").apply { mkdirs() }
         val safeName = filename.replace(Regex("""[^\w\-. ]"""), "_").take(120) + ".jpg"
         val target = File(targetDir, safeName)
