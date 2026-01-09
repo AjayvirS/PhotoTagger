@@ -11,6 +11,7 @@ data class AnnotatedImageEntity(
     val imagePath: String,
     val imageSource: String,
     val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
     val status: String = "PENDING",
-    val thumbPath: String?
+    val thumbPath: String? = null
 )

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface ImageDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertImage(image: AnnotatedImageEntity)
+    suspend fun insertImage(image: AnnotatedImageEntity): Long
 
     @Query("SELECT * FROM annotated_images ORDER BY createdAt DESC")
     fun getAllImages(): Flow<List<AnnotatedImageEntity>>

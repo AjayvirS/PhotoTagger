@@ -9,12 +9,19 @@ import com.tagger.phototagger.data.local.LocalFileManager
 import com.tagger.phototagger.data.local.entity.AnnotatedImageEntity
 import com.tagger.phototagger.data.remote.NetworkModule
 import com.tagger.phototagger.data.remote.dto.AnnotatedImageRequest
+import com.tagger.phototagger.data.util.deriveTitleFromUri
+import com.tagger.phototagger.data.util.sanitizeFilename
+import com.tagger.phototagger.enum.ProcessingStatus
 import com.tagger.phototagger.model.Artwork
 
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.inject.Inject
+
+enum class ImageSource { PICKER, CAMERA, REMOTE }
 
 
 class ImageRepository @Inject constructor(
@@ -25,18 +32,42 @@ class ImageRepository @Inject constructor(
 
     private val resourceBaseUri: String
         get() = "android.resource://${context.packageName}/"
+    suspend fun saveImage(
+        uri: Uri,
+        suggestedTitle: String? = null
+    ): Long = withContext(Dispatchers.IO) {
+        try {
+            val title = suggestedTitle?.takeIf { it.isNotBlank() }
+                ?: deriveTitleFromUri(uri)
 
-    suspend fun saveImage(uri: String, title: String) {
-        withContext(Dispatchers.IO) {
-            val path = localFileManager.storeImage(uriString = uri, filename = title)
+            val storedPath: String = localFileManager.storeImage(
+                filename = sanitizeFilename(title),
+                uriString = uri.toString()
+            ) ?: return@withContext -1L
 
-            if (path != null) {
-                val record = AnnotatedImageEntity(title = title, imagePath = path, imageSource = uri)
-                imageDao.insertImage(record)
-            }
+            val createdAt = System.currentTimeMillis()
 
+            val record = AnnotatedImageEntity(
+                title = title,
+                imagePath = storedPath,
+                imageSource = ImageSource.PICKER.name,
+                createdAt = createdAt,
+                updatedAt = createdAt,
+                status = ProcessingStatus.PENDING.name,
+                thumbPath = null
+            )
+
+            imageDao.insertImage(record)
+        } catch (t: Throwable) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, t.message)
+            -1L
         }
+    }
 
+
+    suspend fun addFromPicker(uri: Uri, title: String = ""): Long{
+        imageDao.insertImage(AnnotatedImageEntity(title=title, imagePath = uri.toString(),
+            imageSource = ImageSource.PICKER.name))
     }
 
 
@@ -66,6 +97,8 @@ class ImageRepository @Inject constructor(
     suspend fun getSavedRecordByUri(sourcePath: String): AnnotatedImageEntity? = withContext(Dispatchers.IO) {
         return@withContext imageDao.findRecordBySource(sourcePath)
     }
+
+
 
     suspend fun generateAiTitle(imageUri: String): String{
         return withContext(Dispatchers.IO){
