@@ -31,4 +31,10 @@ A small-but-complete Android app that covers multiple bases/layers of SW develop
 <img width="290" height="447" alt="homescreen2" src="https://github.com/user-attachments/assets/858bb7a3-0d5d-479c-bb1b-68d708b06954" />
 
 
+### Data Model
+
+<img width="795" height="465" alt="datamodel" src="https://github.com/user-attachments/assets/026d3d9c-b9cc-4fd9-8b16-b4b24c7eca71" />
+
+
+
 
