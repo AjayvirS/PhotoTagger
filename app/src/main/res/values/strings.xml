@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PhotoTagger</string>
+    <string name="title_artwork">My Artwork</string>
 </resources>
