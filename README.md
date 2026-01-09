@@ -19,5 +19,16 @@ A small-but-complete Android app that covers multiple bases/layers of SW develop
 ### Proposed Activity Diagram
 <img width="2055" height="562" alt="Class Diagram(2)" src="https://github.com/user-attachments/assets/ae9c0791-25d2-4433-a110-eea7ba65e128" />
 
+### First Good Design
+#### Welcome Screen
+<img width="264" height="447" alt="welcomescreen" src="https://github.com/user-attachments/assets/bd9f0797-103d-433b-8b21-d3ebe38b1c6c" />
+
+#### Home Screen 1
+<img width="264" height="447" alt="homescreen1" src="https://github.com/user-attachments/assets/2ab95203-44d0-4f63-9cb8-817f2eb115a7" />
+
+
+#### Home Screen 2
+<img width="290" height="447" alt="homescreen2" src="https://github.com/user-attachments/assets/858bb7a3-0d5d-479c-bb1b-68d708b06954" />
+
 
 
