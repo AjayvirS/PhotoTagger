@@ -6,7 +6,7 @@ import android.net.Uri
 import android.util.Base64
 import com.example.kotlintutorials.R
 import com.tagger.phototagger.data.local.LocalFileManager
-import com.tagger.phototagger.data.local.model.AnnotatedImage
+import com.tagger.phototagger.data.local.entity.AnnotatedImageEntity
 import com.tagger.phototagger.data.remote.NetworkModule
 import com.tagger.phototagger.data.remote.dto.AnnotatedImageRequest
 import com.tagger.phototagger.model.Artwork
@@ -31,7 +31,7 @@ class ImageRepository @Inject constructor(
             val path = localFileManager.storeImage(uriString = uri, filename = title)
 
             if (path != null) {
-                val record = AnnotatedImage(title = title, imagePath = path, imageSource = uri)
+                val record = AnnotatedImageEntity(title = title, imagePath = path, imageSource = uri)
                 imageDao.insertImage(record)
             }
 
@@ -63,7 +63,7 @@ class ImageRepository @Inject constructor(
     }
 
 
-    suspend fun getSavedRecordByUri(sourcePath: String): AnnotatedImage? = withContext(Dispatchers.IO) {
+    suspend fun getSavedRecordByUri(sourcePath: String): AnnotatedImageEntity? = withContext(Dispatchers.IO) {
         return@withContext imageDao.findRecordBySource(sourcePath)
     }
 
