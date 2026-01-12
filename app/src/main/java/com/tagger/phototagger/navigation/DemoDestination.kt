@@ -1,4 +1,4 @@
-package com.example.kotlintutorials.navigation
+package com.tagger.phototagger.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable

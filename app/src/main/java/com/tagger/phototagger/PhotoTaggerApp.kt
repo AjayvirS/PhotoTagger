@@ -10,7 +10,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.kotlintutorials.navigation.AppNavHost
+import com.tagger.phototagger.navigation.AppNavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

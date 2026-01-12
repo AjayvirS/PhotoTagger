@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface GeminiFunctionsApi {
 
-    @POST("annotateArtworkFromImage")
+    @POST("annotateArtwork")
     suspend fun annotateArtworkFromImage(@Body body: AnnotatedImageRequest): AnnotatedImageResponse
 
 }

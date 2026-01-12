@@ -1,8 +1,7 @@
 package com.tagger.phototagger.navigation
 
-import com.example.kotlintutorials.R
-import com.example.kotlintutorials.navigation.DemoDestination
-import com.example.kotlintutorials.ui.screens.artspace.ArtSpaceLayout
+import com.tagger.phototagger.ui.screens.artspace.ArtSpaceLayout
+import com.tagger.phototagger.R
 
 
 object DemoRegistry {

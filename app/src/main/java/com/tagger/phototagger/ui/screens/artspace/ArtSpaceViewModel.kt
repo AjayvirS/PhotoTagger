@@ -1,9 +1,9 @@
-package com.example.kotlintutorials.ui.screens.artspace
+package com.tagger.phototagger.ui.screens.artspace
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlintutorials.ui.screens.artspace.state.ArtSpaceState
+import com.tagger.phototagger.ui.screens.artspace.state.ArtSpaceState
 import com.tagger.phototagger.data.ImageRepository
 import com.tagger.phototagger.data.util.deriveTitleFromUri
 import com.tagger.phototagger.data.util.toUriFlexible
@@ -103,8 +103,8 @@ class ArtSpaceViewModel @Inject constructor(
         selectedUriFlow.value = uri.toString()
     }
 
-    fun onSaveRequested(imagePath: String, annotateNow: Boolean = false) {
-        saveRequests.tryEmit(SaveRequest(imagePath = imagePath, annotateNow = annotateNow))
+    fun onSaveRequested(imageSource: String, annotateNow: Boolean = false) {
+        saveRequests.tryEmit(SaveRequest(imageSource = imageSource, annotateNow = annotateNow))
     }
 
     private fun resetState() {
@@ -117,17 +117,17 @@ class ArtSpaceViewModel @Inject constructor(
         try {
             if (req.annotateNow) processingStatus.value = "Generating title…"
 
-            val baseTitle = deriveTitleFromUri(req.imagePath.toUriFlexible())
+            val baseTitle = deriveTitleFromUri(req.imageSource.toUriFlexible())
             val title = if (req.annotateNow) {
-                imgRepo.generateAiTitle(req.imagePath).takeIf { it.isNotBlank() } ?: baseTitle
+                imgRepo.generateAiTitle(req.imageSource).takeIf { it.isNotBlank() } ?: baseTitle
             } else baseTitle
 
-            val storedPath = imgRepo.saveImage(uri = req.imagePath, title = title)
+            val storedPath = imgRepo.saveImage(uri = req.imageSource, title = title)
 
             if (storedPath == null) {
                 processingStatus.value = "Failed to save"
             } else {
-                selectedUriFlow.value = req.imagePath
+                selectedUriFlow.value = req.imageSource
                 processingStatus.value = null
             }
         } catch (e: Exception) {
@@ -136,7 +136,7 @@ class ArtSpaceViewModel @Inject constructor(
         }
     }
 
-    private data class SaveRequest(val imagePath: String, val annotateNow: Boolean)
+    private data class SaveRequest(val imageSource: String, val annotateNow: Boolean)
     private data class Selection(val imageSource: String, val imagePath: String, val title: String, val sourceKey: String)
 }
 

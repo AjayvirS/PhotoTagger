@@ -1,4 +1,4 @@
-package com.example.kotlintutorials.ui.screens.artspace.state
+package com.tagger.phototagger.ui.screens.artspace.state
 
 data class ArtSpaceState(val imagePath: String = "",
                          val id: Int? = null,

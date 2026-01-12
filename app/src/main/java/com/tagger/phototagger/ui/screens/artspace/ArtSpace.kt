@@ -1,4 +1,4 @@
-package com.example.kotlintutorials.ui.screens.artspace
+package com.tagger.phototagger.ui.screens.artspace
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest

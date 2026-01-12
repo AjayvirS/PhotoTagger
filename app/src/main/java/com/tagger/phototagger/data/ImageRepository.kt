@@ -50,7 +50,7 @@ class ImageRepository @Inject constructor(
             val record = AnnotatedImageEntity(
                 title = title,
                 imagePath = storedPath,
-                imageSource = ImageSource.PICKER.name,
+                imageSource = uri,
                 status = ProcessingStatus.PENDING.name,
                 thumbPath = null
             )
