@@ -1,4 +1,4 @@
-package com.example.kotlintutorials
+package com.tagger.phototagger
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import com.example.kotlintutorials.ui.theme.KotlinTutorialsTheme
 import com.tagger.phototagger.ui.theme.PhotoTaggerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +24,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        KotlinTutorialsApp()
+                        PhotoTaggerApp()
                     }
                 }
             }

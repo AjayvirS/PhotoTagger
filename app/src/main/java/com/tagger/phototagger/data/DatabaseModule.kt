@@ -1,8 +1,8 @@
 package com.tagger.phototagger.data
 
-import ImageDao
 import android.content.Context
 import com.tagger.phototagger.data.local.AppDatabase
+import com.tagger.phototagger.data.local.ImageDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

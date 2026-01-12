@@ -1,6 +1,5 @@
 package com.tagger.phototagger.data.local
 
-import ImageDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room

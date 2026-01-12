@@ -1,3 +1,4 @@
+package com.tagger.phototagger.data.local
 
 import androidx.room.Dao
 import androidx.room.Embedded
@@ -17,13 +18,14 @@ interface ImageDao {
     suspend fun insertImage(image: AnnotatedImageEntity): Long
 
     @Query("SELECT * FROM annotated_images ORDER BY createdAt DESC")
-    fun getAllImages(): Flow<List<AnnotatedImageEntity>>
+    fun observeAllImages(): Flow<List<AnnotatedImageEntity>>
 
     @Query ("SELECT * FROM annotated_images WHERE imagePath = :imagePath LIMIT 1")
     suspend fun findRecordByImagePath(imagePath: String): AnnotatedImageEntity?
 
     @Query("SELECT * FROM annotated_images WHERE imageSource = :originalPath LIMIT 1")
-    suspend fun findRecordBySource(originalPath: String): AnnotatedImageEntity?
+    fun observeRecordBySource(originalPath: String): Flow<AnnotatedImageEntity?>
+
 
 
 
@@ -32,12 +34,13 @@ interface ImageDao {
 
     @Transaction
     @Query("""
-    SELECT ai.* FROM annotated_images ai
-    JOIN image_tag it ON ai.id = it.imageId
-    WHERE it.name LIKE '%' || :q || '%'
-    GROUP BY ai.id
-    ORDER BY ai.createdAt DESC
-  """)
+    SELECT * FROM annotated_images 
+    WHERE id IN (
+        SELECT imageId FROM image_tag 
+        WHERE name LIKE '%' || :q || '%'
+    )
+    ORDER BY createdAt DESC
+""")
     fun searchByTag(q: String): Flow<List<AnnotatedImageWithTags>>
 
 }

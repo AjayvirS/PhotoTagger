@@ -1,5 +1,8 @@
 package com.example.kotlintutorials.ui.screens.artspace
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -38,10 +41,13 @@ import coil.compose.AsyncImage
 
 @Composable
 fun ArtSpaceLayout(viewModel: ArtSpaceViewModel = hiltViewModel(), modifier: Modifier = Modifier) {
-
-
-
     val state by viewModel.uiState.collectAsState()
+
+    val pickImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let { viewModel.selectImage(it) }
+    }
 
     Box(
         modifier = modifier
@@ -56,16 +62,23 @@ fun ArtSpaceLayout(viewModel: ArtSpaceViewModel = hiltViewModel(), modifier: Mod
                 .padding(16.dp)
         ) {
             ArtworkWall(modifier = Modifier.weight(3f), imageUri = state.imagePath)
-            ArtworkDescriptor(state.generatedTitle, modifier = Modifier.weight(1f))
+
+            ArtworkDescriptor(state.generatedTitle, modifier = Modifier.weight(0.5f))
+
+            Button(onClick = {
+                pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }) {
+                Text("Pick Custom Image")
+            }
+
             ArtworkController(
-                state.isSaved,
+                isSaved = state.isSaved,
                 onPrev = { viewModel.onPreviousImage() },
                 onNext = { viewModel.onNextImage() },
-                onSave = {viewModel.onSaveRequested(state.imageSource)},
+                onSave = { viewModel.onSaveRequested(state.imageSource, annotateNow = true) },
                 modifier = Modifier.weight(1f)
             )
         }
-
     }
 }
 
