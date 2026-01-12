@@ -1,14 +1,14 @@
 package com.tagger.phototagger.data.local
 
-import ImageDao
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.tagger.phototagger.data.local.entity.AnnotatedImageEntity
+import com.tagger.phototagger.data.local.entity.ImageTagEntity
 
 @Database(
-    entities = [AnnotatedImageEntity::class],
+    entities = [AnnotatedImageEntity::class, ImageTagEntity::class],
     version = 1,
     exportSchema = false
 )

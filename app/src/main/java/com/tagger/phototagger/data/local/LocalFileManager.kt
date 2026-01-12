@@ -1,27 +1,40 @@
 package com.tagger.phototagger.data.local
 
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import javax.inject.Inject
 
 class LocalFileManager @Inject constructor(@ApplicationContext private val context: Context) {
 
-    fun storeImage(uriString: String, filename: String): String? {
-        val uri = Uri.parse(uriString)
-        val file = File(context.filesDir, filename)
+    fun storeImage(uri: Uri, filename: String): String? {
+        val targetDir = File(context.filesDir, "images").apply { mkdirs() }
+        val safeName = filename.replace(Regex("""[^\w\-. ]"""), "_").take(120) + ".jpg"
+        val target = File(targetDir, safeName)
 
-        return try {
-            context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                file.outputStream().use { outputStream ->
-                    inputStream.copyTo(outputStream)
+        val input: InputStream? = when (uri.scheme) {
+            ContentResolver.SCHEME_CONTENT, "android.resource" -> context.contentResolver.openInputStream(uri)
+            ContentResolver.SCHEME_FILE -> uri.path?.let { File(it).inputStream() }
+            else -> null
+        }
+
+        input ?: return null
+
+        input.use { ins ->
+            FileOutputStream(target).use { outs ->
+                val buf = ByteArray(DEFAULT_BUFFER_SIZE)
+                while (true) {
+                    val r = ins.read(buf)
+                    if (r <= 0) break
+                    outs.write(buf, 0, r)
                 }
             }
-            Uri.fromFile(file).toString()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
         }
+        return target.absolutePath
     }
 }

@@ -1,14 +1,8 @@
-package com.example.kotlintutorials.navigation
+package com.tagger.phototagger.navigation
 
-import CompletedTasks
-import com.example.kotlintutorials.R
-import com.example.kotlintutorials.ui.screens.artspace.ArtSpaceLayout
-import com.example.kotlintutorials.ui.screens.dice.DiceWithButtonAndImage
-import com.example.kotlintutorials.ui.screens.greetings.GreetingText
-import com.example.kotlintutorials.ui.screens.lemonade.LemonMaker
-import com.example.kotlintutorials.ui.screens.quadrant.ComposeArticle
-import com.example.kotlintutorials.ui.screens.quadrant.ComposeQuadrant
-import com.example.kotlintutorials.ui.screens.tiptime.TipTimeLayout
+import com.tagger.phototagger.ui.screens.artspace.ArtSpaceLayout
+import com.tagger.phototagger.R
+
 
 object DemoRegistry {
 

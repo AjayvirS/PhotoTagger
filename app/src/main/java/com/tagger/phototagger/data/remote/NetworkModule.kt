@@ -1,8 +1,8 @@
 package com.tagger.phototagger.data.remote
 
-import com.example.kotlintutorials.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.tagger.phototagger.BuildConfig
 import com.tagger.phototagger.data.remote.gemini.GeminiFunctionsApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
