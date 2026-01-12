@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ArtSpaceViewModel @Inject constructor(
@@ -79,6 +81,9 @@ class ArtSpaceViewModel @Inject constructor(
         )
     )
 
+    private val _uiEvents = MutableSharedFlow<String>()
+    val uiEvents = _uiEvents.asSharedFlow()
+
     init {
         viewModelScope.launch {
             saveRequests.collectLatest { handleSave(it) }
@@ -117,19 +122,24 @@ class ArtSpaceViewModel @Inject constructor(
         try {
             if (req.annotateNow) processingStatus.value = "Generating title…"
 
-            val baseTitle = deriveTitleFromUri(req.imageSource.toUriFlexible())
-            val title = if (req.annotateNow) {
-                imgRepo.generateAiTitle(req.imageSource).takeIf { it.isNotBlank() } ?: baseTitle
-            } else baseTitle
+
+            val title: String = if (req.annotateNow) {
+                val result: Result<String> = imgRepo.generateAiTitle(req.imageSource)
+
+                result.getOrElse { error ->
+                    processingStatus.value = "Error while generating: ${error.message}"
+                    return
+                }
+            } else deriveTitleFromUri(req.imageSource.toUriFlexible())
 
             val storedPath = imgRepo.saveImage(uri = req.imageSource, title = title)
 
             if (storedPath == null) {
-                processingStatus.value = "Failed to save"
+                _uiEvents.emit("Could not generate title. Please check your connection.")
             } else {
                 selectedUriFlow.value = req.imageSource
-                processingStatus.value = null
             }
+            processingStatus.value = null
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             processingStatus.value = "Error: ${e.message ?: "unexpected"}"
@@ -137,7 +147,12 @@ class ArtSpaceViewModel @Inject constructor(
     }
 
     private data class SaveRequest(val imageSource: String, val annotateNow: Boolean)
-    private data class Selection(val imageSource: String, val imagePath: String, val title: String, val sourceKey: String)
+    private data class Selection(
+        val imageSource: String,
+        val imagePath: String,
+        val title: String,
+        val sourceKey: String
+    )
 }
 
 

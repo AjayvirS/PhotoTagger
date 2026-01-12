@@ -22,7 +22,7 @@ fun PhotoTaggerApp() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Kotlin Tutorials",
+                        text = "PhotoTagger",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }

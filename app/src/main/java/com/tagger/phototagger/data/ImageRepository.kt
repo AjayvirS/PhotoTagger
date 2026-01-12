@@ -63,11 +63,11 @@ class ImageRepository @Inject constructor(
         }
     }
 
-    suspend fun generateAiTitle(imageUri: String): String = withContext(Dispatchers.IO) {
+    suspend fun generateAiTitle(imageUri: String): Result<String> = withContext(Dispatchers.IO) {
         try {
             val uri = Uri.parse(imageUri)
             val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-                ?: return@withContext "Untitled"
+                ?: return@withContext Result.failure(Exception("Could not read image data"))
 
             val base64Image = Base64.encodeToString(bytes, Base64.NO_WRAP)
 
@@ -75,10 +75,14 @@ class ImageRepository @Inject constructor(
                 AnnotatedImageRequest(image64 = base64Image, mimeType = "image/jpeg")
             )
 
-            response.raw
+            if (response.raw.isBlank()) {
+                Result.failure(Exception("AI returned an empty title"))
+            } else {
+                Result.success(response.raw)
+            }
         } catch (e: Exception) {
             Log.e("ImageRepository", "AI Generation failed", e)
-            "Error generating title"
+            Result.failure(e)
         }
     }
 
